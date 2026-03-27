@@ -42,7 +42,7 @@ When the queue reduces in size, KEDA scales back down.
 0. GPU Setup (kind cluster)
 ---------------------------
 
-If your ExApp needs GPU (e.g. llm2), you must set up GPU passthrough in
+If your ExApp requires a GPU (e.g. llm2), you must set up GPU passthrough in
 the kind cluster.
 
 0.1 Configure Docker on the host
@@ -100,7 +100,17 @@ the kind cluster.
 0.5 Install NVIDIA device plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For a single GPU shared across multiple pods, use **time-slicing**.
+By default, if a Deploy daemon is configured with multiple GPUs,
+AppAPI will attach one ExApp container/pod per GPU.
+In order to create multiple pods that share a single GPU,
+**time-slicing** must be configured for the GPU device plugin.
+
+.. note::
+
+	All ExApps registered on the same Deploy daemon will share the same GPU resources.
+	For ExApps that require heavy use of GPUs,
+	it is recommended to have a separate Deploy daemon (host) for each of them.
+
 First create a ConfigMap with the number of replicas (virtual GPUs):
 
 .. code:: bash
@@ -186,7 +196,8 @@ Then deploy the device plugin with the config:
        print(f'{n[\"metadata\"][\"name\"]}: nvidia.com/gpu = {gpu}')
    "
 
-Expected: ``nvidia.com/gpu = 4`` (or your configured replicas count).
+Expected: ``nvidia.com/gpu = 4`` (or your configured replicas count
+multiplied by the number of available physical GPUs).
 
 0.7 Test GPU from a pod
 ~~~~~~~~~~~~~~~~~~~~~~~

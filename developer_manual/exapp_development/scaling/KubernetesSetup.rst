@@ -45,6 +45,24 @@ Architecture overview
 
 --------------
 
+0. Environment variables (optional)
+-----------------------------------
+
+If you have a custom Kubernetes environment, you can specify its configuration here
+(the values below are the current defaults).
+
+.. code:: bash
+
+   # .env
+   HP_K8S_NAMESPACE="nextcloud-exapps"
+   HP_K8S_STORAGE_CLASS=""
+   HP_K8S_DEFAULT_STORAGE_SIZE="10Gi"
+   HP_K8S_BEARER_TOKEN_FILE="/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+.. code:: bash
+
+   source .env
+
 .. _scaling-kubernetes-setup-step-1:
 
 1. Create the kind Cluster
@@ -160,15 +178,16 @@ From the HaRP repository root:
 
 .. code:: bash
 
-   cd ~/nextcloud/HaRP
+   cd path/to/HaRP
    bash development/redeploy_host_k8s.sh
 
 The script will:
 
    1. Auto-detect the k8s API server URL
    2. Generate a fresh bearer token
-   3. Build the HaRP Docker image
-   4. Start HaRP with k8s backend enabled on host network
+   3. Connect the Nextcloud network to the cluster network
+   4. Build the HaRP Docker image
+   5. Start HaRP with k8s backend enabled on host network
 
 Wait for HaRP to become healthy:
 
@@ -203,6 +222,11 @@ your container ID or name, and ``<GATEWAY_IP>`` with the gateway from
      --k8s \
      --k8s_expose_type=nodeport \
      --set-default
+
+.. note::
+
+   While the ``--harp_frp_address`` is a required argument for the ``docker`` command,
+   it is not used by Kubernetes at all.
 
 Verify:
 
@@ -397,15 +421,26 @@ Clean up all ExApp resources
 Reset everything
 ~~~~~~~~~~~~~~~~
 
+Remove the deploy daemon config:
+
 .. code:: bash
 
-   # Remove daemon config
    docker exec <NC_CONTAINER> sudo -E -u www-data php occ app_api:daemon:unregister k8s_local
 
-   # Delete kind cluster
+.. note::
+
+   Optionally, add the ``--rm-data`` option to also delete the associated PVC (Persistent Volume Claim).
+
+Delete the ``kind`` cluster:
+
+.. code:: bash
+
    kind delete cluster --name nc-exapps
 
-   # Remove HaRP container
+Remove the HaRP container:
+
+.. code:: bash
+
    docker rm -f appapi-harp
 
 Then start again from :ref:`Step 1<scaling-kubernetes-setup-step-1>`.

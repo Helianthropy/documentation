@@ -14,16 +14,6 @@ to increase the capacity and performance.
 The rest of this section will explain how to setup and use Kubernetes for automated scaling.
 Additional instructions are also provided if you have a GPU device for GPU scaling.
 
-
-.. note::
-
-	Currently, if a Deploy daemon is configured with GPUs available,
-	AppAPI will by default attach all available GPU devices to each ExApp container on this Deploy daemon.
-	This means that these GPUs are shared between all ExApps on the same Deploy daemon.
-	Therefore, for the ExApps that require heavy use of GPUs,
-	it is recommended to have a separate Deploy daemon (host) for them.
-
-
 .. toctree::
 	:maxdepth: 2
 
