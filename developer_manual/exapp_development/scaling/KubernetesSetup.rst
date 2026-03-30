@@ -185,7 +185,7 @@ The script will:
 
    1. Auto-detect the k8s API server URL
    2. Generate a fresh bearer token
-   3. Connect the Nextcloud network to the cluster network
+   3. Connect the kind node to the ``master_default`` Docker network
    4. Build the HaRP Docker image
    5. Start HaRP with k8s backend enabled on host network
 

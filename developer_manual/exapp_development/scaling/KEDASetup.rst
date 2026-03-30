@@ -317,7 +317,7 @@ Expected:
 
 .. code:: json
 
-   {"ocs":{"meta":{"status":"ok","statuscode":200,"message":"OK"},"data":{"scheduled":0,"running":0}}}
+   {"ocs":{"meta":{"status":"ok","statuscode":200,"message":"OK"},"data":{"scheduled_count":0,"running_count":0}}}
 
 4. Create k8s secret
 --------------------
@@ -390,7 +390,7 @@ Apply
        - type: metrics-api
          metadata:
            url: "https://nextcloud.local/ocs/v2.php/taskprocessing/queue_stats?format=json&taskTypeId=core:text2text,core:text2text:chat,core:text2text:summary"
-           valueLocation: "ocs.data.scheduled"
+           valueLocation: "ocs.data.scheduled_count"
            targetValue: "5"
            authMode: "basic"
            unsafeSsl: "true"

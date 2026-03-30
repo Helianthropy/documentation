@@ -40,11 +40,10 @@ Prerequisites
 
 .. note::
 
-   You can also hit the agent directly on
-   ``http://127.0.0.1:8200/...`` for debugging, but that bypasses the
-   HAProxy/AppAPI path and may skip shared-key enforcement depending
-   on your routing. Moreover, the port is only accessible from within the HaRP container
-   (as it is the internal SPOE control API).
+   HaRP also has an internal HTTP control API on ``127.0.0.1:8200``
+   that handles ExApp lifecycle operations (create, start, stop, remove, expose).
+   You could ``docker exec`` into the HaRP container and ``curl`` it directly for low-level debugging,
+   but this bypasses HAProxy's shared-key authentication and is not reachable from outside the container.
 
 1. Check if ExApp is present (k8s deployment exists)
 ----------------------------------------------------
